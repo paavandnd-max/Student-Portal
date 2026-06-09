@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AcademAI - Your Personal Academic Genius</title>
+  <title>AcademAI - Your AI-Powered Learning Companion</title>
   <link rel="stylesheet" href="style.css?v=4.2">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <style>
     html, body {
       background: #000000 !important;
@@ -67,6 +68,7 @@
 
     <a href="/dashboard" class="user-profile" title="Dashboard">D</a>
   </nav>
+  <div class="dock-tech-stack">Built with HTML5 • Gemini AI • Three.js • Express</div>
 
   <!-- Main Content Split Hero -->
   <main class="main-content hero">
@@ -80,7 +82,7 @@
           POWERED BY GEMINI AI × IBM CLOUD
         </div>
         
-        <h1>Your Personal<br><span class="gradient-text">Academic Genius</span></h1>
+        <h1>Your AI-Powered<br><span class="gradient-text">Learning Companion</span></h1>
         
         <p>
           Chat with <span class="highlight-ai">Gemini AI</span>, visualize textbook diagrams in <span class="highlight-ar">Augmented Reality</span>, take <span class="highlight-quiz">Smart Quizzes</span>, and track your progress in real-time.
@@ -105,25 +107,67 @@
       <!-- Right Interactive Preview Console -->
       <div class="hero-right">
         <div class="hologram-console">
-          <div class="hologram-header">
-            <div class="console-dot-group">
-              <span class="console-dot red"></span>
-              <span class="console-dot yellow"></span>
-              <span class="console-dot green"></span>
+          <div class="hologram-header" style="flex-direction: column; height: auto; gap: 0.75rem; padding: 1.25rem 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <div class="console-dot-group">
+                <span class="console-dot red"></span>
+                <span class="console-dot yellow"></span>
+                <span class="console-dot green"></span>
+              </div>
+              <div class="console-title" style="font-size: 0.75rem; letter-spacing: 2px;">ACADEMAI_SANDBOX // V2.5</div>
+              <span class="console-status" style="font-size: 0.7rem; padding: 3px 8px; border-radius: 50px; background: rgba(0, 242, 254, 0.15); border: 1px solid rgba(0, 242, 254, 0.3); color: var(--accent-cyan); text-shadow: 0 0 6px rgba(0, 242, 254, 0.4);">LIVE</span>
             </div>
-            <div class="console-title">ACADEMAI_CORE_V2.5 // LIVE_DEMO</div>
-            <span class="console-status">ONLINE</span>
+            <div class="console-tabs" style="display: flex; gap: 0.5rem; width: 100%;">
+              <button class="console-tab-btn active" id="btn-tab-chat" onclick="switchDemoTab('chat')" style="flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                💬 Tutor
+              </button>
+              <button class="console-tab-btn" id="btn-tab-card" onclick="switchDemoTab('card')" style="flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                🎴 Flashcard
+              </button>
+              <button class="console-tab-btn" id="btn-tab-model" onclick="switchDemoTab('model')" style="flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                📐 3D Twin
+              </button>
+            </div>
           </div>
           
-          <div class="hologram-chat-feed" id="demo-chat-feed">
-            <!-- Simulated chat messages will type here -->
-          </div>
-          
-          <div class="hologram-input-mock">
-            <span class="mock-cursor-text" id="demo-mock-input">Query AI Tutor...</span>
-            <button class="mock-send-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
+          <div class="hologram-body" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+            <!-- Content 1: Chat Feed -->
+            <div class="demo-tab-content active" id="demo-content-chat" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; width: 100%;">
+              <div class="hologram-chat-feed" id="demo-chat-feed" style="flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; scrollbar-width: none;"></div>
+              <div class="hologram-input-mock">
+                <span class="mock-cursor-text" id="demo-mock-input">Query AI Tutor...</span>
+                <button class="mock-send-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Content 2: Flashcard -->
+            <div class="demo-tab-content" id="demo-content-card" style="display: none; align-items: center; justify-content: center; flex: 1; width: 100%; height: 100%; padding: 1rem;">
+              <div class="demo-card" onclick="flipDemoCard()" style="width: 280px; height: 180px; perspective: 1000px; cursor: pointer;">
+                <div class="demo-card-inner" id="demo-card-inner" style="position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); transform-style: preserve-3d; border-radius: 20px;">
+                  <!-- Front Face -->
+                  <div class="demo-card-face" style="position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.015); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; gap: 0.5rem;">
+                    <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-cyan); font-weight: 700;">Biology Term</div>
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; margin: 0; color: white;">Mitochondria</h3>
+                    <span style="font-size: 0.65rem; color: var(--text-muted); animation: pulseGlow 1.5s infinite alternate;">tap card to flip</span>
+                  </div>
+                  <!-- Back Face -->
+                  <div class="demo-card-face" style="position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; border: 1px solid var(--border-active); background: rgba(212, 175, 55, 0.03); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; gap: 0.5rem; transform: rotateY(180deg);">
+                    <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-primary); font-weight: 700;">Definition</div>
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: var(--text-main); margin: 0;">The powerhouse of the cell. Generates adenosine triphosphate (ATP) via aerobic respiration.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content 3: 3D Twin Model -->
+            <div class="demo-tab-content" id="demo-content-model" style="display: none; width: 100%; height: 100%; flex: 1; position: relative;">
+              <div id="demo-canvas-container" style="width: 100%; height: 100%; position: relative;">
+                <canvas id="demo-three-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                <div style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; color: var(--text-muted); background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 50px; border: 1px solid var(--border-color); white-space: nowrap; pointer-events: none; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Drag to rotate 3D Helix</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -292,10 +292,18 @@ function initParticles() {
     active: false
   };
 
+  const mouseOffset = { x: 0, y: 0 };
+
   window.addEventListener("mousemove", (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
     mouse.active = true;
+    
+    // Calculate parallax offsets (distance from center scaled down)
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    mouseOffset.x = (e.clientX - centerX) * 0.025;
+    mouseOffset.y = (e.clientY - centerY) * 0.025;
   });
 
   window.addEventListener("mouseleave", () => {
@@ -412,7 +420,10 @@ function initParticles() {
     
     draw() {
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      // Add visual parallax depth mapping based on particle radius
+      const drawX = this.x + mouseOffset.x * (this.radius * 0.75);
+      const drawY = this.y + mouseOffset.y * (this.radius * 0.75);
+      ctx.arc(drawX, drawY, this.radius, 0, Math.PI * 2);
       ctx.fillStyle = themeColors.particleFill;
       ctx.shadowBlur = 3;
       ctx.shadowColor = themeColors.particleFill;
@@ -429,6 +440,12 @@ function initParticles() {
   function animate() {
     ctx.clearRect(0, 0, width, height);
     
+    // Smoothly decelerate parallax offsets when mouse leaves viewport
+    if (!mouse.active) {
+      mouseOffset.x += (0 - mouseOffset.x) * 0.05;
+      mouseOffset.y += (0 - mouseOffset.y) * 0.05;
+    }
+    
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         let dx = particles[i].x - particles[j].x;
@@ -437,8 +454,10 @@ function initParticles() {
         
         if (dist < 50) {
           ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
+          const p1Factor = particles[i].radius * 0.75;
+          const p2Factor = particles[j].radius * 0.75;
+          ctx.moveTo(particles[i].x + mouseOffset.x * p1Factor, particles[i].y + mouseOffset.y * p1Factor);
+          ctx.lineTo(particles[j].x + mouseOffset.x * p2Factor, particles[j].y + mouseOffset.y * p2Factor);
           ctx.strokeStyle = themeColors.particleLine;
           ctx.lineWidth = 0.3;
           ctx.stroke();
@@ -451,7 +470,8 @@ function initParticles() {
         let dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < mouse.radius) {
           ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
+          const p1Factor = particles[i].radius * 0.75;
+          ctx.moveTo(particles[i].x + mouseOffset.x * p1Factor, particles[i].y + mouseOffset.y * p1Factor);
           ctx.lineTo(mouse.x, mouse.y);
           ctx.strokeStyle = themeColors.mouseLine;
           ctx.lineWidth = 0.5;
@@ -1041,7 +1061,7 @@ function initTopicBadges() {
   });
 }
 
-// 12. Landing Page Start Button Routing & Hologram Demo Simulation
+// 12. Landing Page Start Button Routing, Tab Switching & 3D WebGL Helix
 function initLandingPage() {
   const startBtn = document.getElementById("start-btn");
   if (startBtn) {
@@ -1055,7 +1075,69 @@ function initLandingPage() {
     });
   }
 
-  // Hologram Simulation
+  // Active state trackers
+  let currentTab = "chat";
+  let demoChatActive = true;
+  let activeInterval = null;
+  let activeTimeout = null;
+
+  // 1. Tab Switching Handler
+  window.switchDemoTab = function(tabName) {
+    if (currentTab === tabName) return;
+    currentTab = tabName;
+
+    // Toggle active tab buttons
+    document.querySelectorAll(".console-tab-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
+    const targetBtn = document.getElementById(`btn-tab-${tabName}`);
+    if (targetBtn) targetBtn.classList.add("active");
+
+    // Toggle active content divisions
+    document.querySelectorAll(".demo-tab-content").forEach(content => {
+      content.classList.remove("active");
+      content.style.display = "none";
+    });
+    const targetContent = document.getElementById(`demo-content-${tabName}`);
+    if (targetContent) {
+      targetContent.classList.add("active");
+      targetContent.style.display = tabName === "chat" ? "flex" : (tabName === "card" ? "flex" : "block");
+    }
+
+    // Tab-specific lifecycle activations
+    if (tabName === "chat") {
+      demoChatActive = true;
+      runNextDemoStep();
+    } else {
+      // Pause typewriter loop
+      demoChatActive = false;
+      if (activeInterval) clearInterval(activeInterval);
+      if (activeTimeout) clearTimeout(activeTimeout);
+    }
+
+    if (tabName === "model") {
+      isDnaLoopActive = true;
+      if (!isThreeInitialized) {
+        initDemo3DModel();
+      } else {
+        // Resume DNA Helix spin loop
+        resumeDnaHelixLoop();
+      }
+    } else {
+      // Pause WebGL rendering loop to conserve battery/CPU
+      isDnaLoopActive = false;
+    }
+  };
+
+  // 2. 3D Glass card flipper handler
+  window.flipDemoCard = function() {
+    const cardInner = document.getElementById("demo-card-inner");
+    if (cardInner) {
+      cardInner.classList.toggle("flipped");
+    }
+  };
+
+  // 3. Hologram Chat Typewriter Simulation
   const demoFeed = document.getElementById("demo-chat-feed");
   const demoInput = document.getElementById("demo-mock-input");
   if (!demoFeed || !demoInput) return;
@@ -1072,9 +1154,12 @@ function initLandingPage() {
   let stepIndex = 0;
 
   function runNextDemoStep() {
+    if (!demoChatActive) return;
+    
     if (stepIndex >= script.length) {
       // Loop the demo after a delay
-      setTimeout(() => {
+      activeTimeout = setTimeout(() => {
+        if (!demoChatActive) return;
         demoFeed.innerHTML = "";
         demoInput.textContent = "Query AI Tutor...";
         stepIndex = 0;
@@ -1088,13 +1173,18 @@ function initLandingPage() {
     if (current.type === "input") {
       let charIndex = 0;
       demoInput.textContent = "";
-      const typeInterval = setInterval(() => {
+      activeInterval = setInterval(() => {
+        if (!demoChatActive) {
+          clearInterval(activeInterval);
+          return;
+        }
         if (charIndex < current.text.length) {
           demoInput.textContent += current.text[charIndex];
           charIndex++;
         } else {
-          clearInterval(typeInterval);
-          setTimeout(() => {
+          clearInterval(activeInterval);
+          activeTimeout = setTimeout(() => {
+            if (!demoChatActive) return;
             stepIndex++;
             runNextDemoStep();
           }, 600);
@@ -1109,7 +1199,8 @@ function initLandingPage() {
       demoFeed.scrollTop = demoFeed.scrollHeight;
       demoInput.textContent = "Query AI Tutor...";
       
-      setTimeout(() => {
+      activeTimeout = setTimeout(() => {
+        if (!demoChatActive) return;
         stepIndex++;
         runNextDemoStep();
       }, 800);
@@ -1122,16 +1213,21 @@ function initLandingPage() {
       demoFeed.scrollTop = demoFeed.scrollHeight;
 
       let charIndex = 0;
-      const typeInterval = setInterval(() => {
+      activeInterval = setInterval(() => {
+        if (!demoChatActive) {
+          clearInterval(activeInterval);
+          return;
+        }
         if (charIndex < current.text.length) {
           // Type character
           msg.innerHTML = current.text.substring(0, charIndex + 1) + `<span class="typing-cursor">|</span>`;
           demoFeed.scrollTop = demoFeed.scrollHeight;
           charIndex++;
         } else {
-          clearInterval(typeInterval);
+          clearInterval(activeInterval);
           msg.innerHTML = current.text; // Remove cursor
-          setTimeout(() => {
+          activeTimeout = setTimeout(() => {
+            if (!demoChatActive) return;
             stepIndex++;
             runNextDemoStep();
           }, 2500);
@@ -1140,7 +1236,193 @@ function initLandingPage() {
     }
   }
 
-  // Start the preview animation loop after 1.5 seconds
+  // 4. Lightweight Three.js DNA Helix Engine
+  let threeRenderer, threeScene, threeCamera, dnaGroup;
+  let isThreeInitialized = false;
+  let isDnaLoopActive = false;
+
+  function initDemo3DModel() {
+    const canvas = document.getElementById("demo-three-canvas");
+    if (!canvas) return;
+    
+    // Fallback if Three.js is not loaded on the page
+    if (typeof THREE === "undefined") {
+      console.warn("Three.js not loaded. Skipping 3D Twin render.");
+      return;
+    }
+
+    const width = canvas.clientWidth || 300;
+    const height = canvas.clientHeight || 200;
+    
+    // Create Scene & Transparent Renderer
+    threeScene = new THREE.Scene();
+    threeCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    threeCamera.position.z = 10;
+    
+    threeRenderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true
+    });
+    threeRenderer.setSize(width, height, false);
+    threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // Dynamic Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+    threeScene.add(ambientLight);
+    
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.85);
+    dirLight1.position.set(5, 5, 5);
+    threeScene.add(dirLight1);
+    
+    const dirLight2 = new THREE.DirectionalLight(0xd4af37, 1.25);
+    dirLight2.position.set(-5, -5, 5);
+    threeScene.add(dirLight2);
+    
+    // Procedural double helix representation
+    dnaGroup = new THREE.Group();
+    threeScene.add(dnaGroup);
+    
+    const sphereGeo = new THREE.SphereGeometry(0.16, 16, 16);
+    const cylinderGeo = new THREE.CylinderGeometry(0.03, 0.03, 1, 8);
+    
+    const goldMat = new THREE.MeshStandardMaterial({
+      color: 0xd4af37,
+      metalness: 0.9,
+      roughness: 0.15
+    });
+    
+    const cyanMat = new THREE.MeshStandardMaterial({
+      color: 0x00f2fe,
+      metalness: 0.8,
+      roughness: 0.2
+    });
+    
+    const rungsCount = 20;
+    const helixRadius = 1.8;
+    const helixHeight = 6.0;
+    const turns = 2.0;
+    
+    for (let i = 0; i < rungsCount; i++) {
+      const t = i / (rungsCount - 1);
+      const angle = t * Math.PI * 2 * turns;
+      const y = (t - 0.5) * helixHeight;
+      
+      const x1 = Math.sin(angle) * helixRadius;
+      const z1 = Math.cos(angle) * helixRadius;
+      
+      const x2 = -x1;
+      const z2 = -z1;
+      
+      // Strand 1 Sphere
+      const s1 = new THREE.Mesh(sphereGeo, goldMat);
+      s1.position.set(x1, y, z1);
+      dnaGroup.add(s1);
+      
+      // Strand 2 Sphere
+      const s2 = new THREE.Mesh(sphereGeo, goldMat);
+      s2.position.set(x2, y, z2);
+      dnaGroup.add(s2);
+      
+      // Connecting Rung Cylinder
+      const rung = new THREE.Mesh(cylinderGeo, i % 2 === 0 ? goldMat : cyanMat);
+      rung.scale.set(1, helixRadius * 2, 1);
+      rung.rotation.z = Math.PI / 2;
+      rung.rotation.y = -angle;
+      rung.position.set(0, y, 0);
+      dnaGroup.add(rung);
+    }
+    
+    // Drag Rotations
+    let isDragging = false;
+    let prevX = 0;
+    let prevY = 0;
+    
+    const onStart = (clientX, clientY) => {
+      isDragging = true;
+      prevX = clientX;
+      prevY = clientY;
+    };
+    
+    const onMove = (clientX, clientY) => {
+      if (!isDragging) return;
+      const dx = clientX - prevX;
+      const dy = clientY - prevY;
+      
+      dnaGroup.rotation.y += dx * 0.01;
+      dnaGroup.rotation.x += dy * 0.01;
+      
+      prevX = clientX;
+      prevY = clientY;
+    };
+    
+    const onEnd = () => {
+      isDragging = false;
+    };
+    
+    canvas.addEventListener("mousedown", (e) => onStart(e.clientX, e.clientY));
+    window.addEventListener("mousemove", (e) => onMove(e.clientX, e.clientY));
+    window.addEventListener("mouseup", onEnd);
+    
+    canvas.addEventListener("touchstart", (e) => {
+      if (e.touches.length > 0) onStart(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    window.addEventListener("touchmove", (e) => {
+      if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    window.addEventListener("touchend", onEnd);
+    
+    // Animation Render Loop
+    function tick() {
+      if (!isDnaLoopActive) return;
+      requestAnimationFrame(tick);
+      
+      if (!isDragging) {
+        dnaGroup.rotation.y += 0.005;
+      }
+      
+      const currentWidth = canvas.clientWidth;
+      const currentHeight = canvas.clientHeight;
+      if (canvas.width !== currentWidth || canvas.height !== currentHeight) {
+        threeCamera.aspect = currentWidth / currentHeight;
+        threeCamera.updateProjectionMatrix();
+        threeRenderer.setSize(currentWidth, currentHeight, false);
+      }
+      
+      threeRenderer.render(threeScene, threeCamera);
+    }
+    
+    isThreeInitialized = true;
+    isDnaLoopActive = true;
+    tick();
+  }
+
+  function resumeDnaHelixLoop() {
+    isDnaLoopActive = true;
+    // We need a tick trigger to start the render loop again
+    const canvas = document.getElementById("demo-three-canvas");
+    if (!canvas) return;
+    
+    function tick() {
+      if (!isDnaLoopActive) return;
+      requestAnimationFrame(tick);
+      
+      dnaGroup.rotation.y += 0.005;
+      
+      const currentWidth = canvas.clientWidth;
+      const currentHeight = canvas.clientHeight;
+      if (canvas.width !== currentWidth || canvas.height !== currentHeight) {
+        threeCamera.aspect = currentWidth / currentHeight;
+        threeCamera.updateProjectionMatrix();
+        threeRenderer.setSize(currentWidth, currentHeight, false);
+      }
+      
+      threeRenderer.render(threeScene, threeCamera);
+    }
+    tick();
+  }
+
+  // Start typewriter simulation by default
   setTimeout(runNextDemoStep, 1500);
 }
 
