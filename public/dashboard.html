@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcademAI - Dashboard</title>
+  <!-- Cache buster query string added to override browser caching immediately -->
+  <link rel="stylesheet" href="style.css?v=4.2">
+  <style>
+    html, body {
+      background: #000000 !important;
+      background-color: #000000 !important;
+    }
+    .ambient-orb {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Ambient Glowing Background Orbs -->
+  <div class="ambient-orb orb-purple"></div>
+  <div class="ambient-orb orb-blue"></div>
+  <div class="ambient-orb orb-cyan"></div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Floating Bottom Navigation Dock -->
+  <nav class="bottom-dock" id="app-dock">
+    <div class="logo">
+      <a href="/" style="display: flex; align-items: center; text-decoration: none; color: inherit;" title="AcademAI">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <defs>
+            <linearGradient id="logo-grad-dock" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#aa7c11" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#f3e5ab" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#logo-grad-dock)" d="M12 2L2 22h20L12 2z"></path>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/" class="nav-item" title="Home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </a>
+      <a href="/dashboard" class="nav-item active" title="Dashboard">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </a>
+      <a href="chat.html" class="nav-item" title="AI Tutor">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      </a>
+      <a href="quiz.html" class="nav-item" title="Smart Quiz">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </a>
+      <a href="flashcards.html" class="nav-item" title="Flashcards">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+      </a>
+    </div>
+
+    <a href="/logout" class="user-profile" title="Logout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="dashboard-header-container">
+      <div class="dashboard-header">
+        <!-- server.js will replace this exact string with the user's name and a logout button -->
+        <h1>Welcome Back 👋</h1>
+      </div>
+    </div>
+
+    <!-- Bento Grid Container -->
+    <div class="premium-dashboard-container">
+      
+      <!-- Bento Card 1: Study Time Gauge -->
+      <div class="bento-card stat-gauge-card">
+        <div class="gauge-svg-wrapper">
+          <svg class="radial-gauge" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="gauge-grad-study" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#aa7c11" />
+                <stop offset="100%" stop-color="#d4af37" />
+              </linearGradient>
+            </defs>
+            <circle class="gauge-bg" cx="50" cy="50" r="40" />
+            <circle class="gauge-fill" cx="50" cy="50" r="40" stroke="url(#gauge-grad-study)" style="stroke-dasharray: 251.2; stroke-dashoffset: 69.08;" />
+          </svg>
+          <div class="gauge-center-text">
+            <span class="gauge-value">14.5h</span>
+          </div>
+        </div>
+        <span class="gauge-label">Study Time</span>
+        <span class="gauge-trend positive">↑ 12% this week</span>
+      </div>
+
+      <!-- Bento Card 2: Quiz Average Gauge -->
+      <div class="bento-card stat-gauge-card">
+        <div class="gauge-svg-wrapper">
+          <svg class="radial-gauge" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="gauge-grad-quiz" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#d4af37" />
+                <stop offset="100%" stop-color="#f3e5ab" />
+              </linearGradient>
+            </defs>
+            <circle class="gauge-bg" cx="50" cy="50" r="40" />
+            <circle class="gauge-fill" cx="50" cy="50" r="40" stroke="url(#gauge-grad-quiz)" style="stroke-dasharray: 251.2; stroke-dashoffset: 35.16;" />
+          </svg>
+          <div class="gauge-center-text">
+            <span class="gauge-value">86%</span>
+          </div>
+        </div>
+        <span class="gauge-label">Quiz Avg</span>
+        <span class="gauge-trend positive">↑ 3% since yesterday</span>
+      </div>
+
+      <!-- Bento Card 3: Cards Mastered Gauge -->
+      <div class="bento-card stat-gauge-card">
+        <div class="gauge-svg-wrapper">
+          <svg class="radial-gauge" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="gauge-grad-cards" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#aa7c11" />
+                <stop offset="100%" stop-color="#f3e5ab" />
+              </linearGradient>
+            </defs>
+            <circle class="gauge-bg" cx="50" cy="50" r="40" />
+            <circle class="gauge-fill" cx="50" cy="50" r="40" stroke="url(#gauge-grad-cards)" style="stroke-dasharray: 251.2; stroke-dashoffset: 40.19;" />
+          </svg>
+          <div class="gauge-center-text">
+            <span class="gauge-value">42</span>
+          </div>
+        </div>
+        <span class="gauge-label">Cards Mastered</span>
+        <span class="gauge-trend neutral">12 currently active</span>
+      </div>
+
+      <!-- Bento Card 4: Weekly Activity Graph (Spans 2 cols, 2 rows) -->
+      <div class="bento-card bento-span-2 bento-row-2">
+        <div class="widget-title-row">
+          <h3>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; color: var(--accent-primary);"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            Weekly Study Progress
+          </h3>
+          <span class="widget-subtitle">Last 7 Days</span>
+        </div>
+        
+        <div class="chart-container" style="margin-top: 1.5rem;">
+          <svg class="chart-svg" viewBox="0 0 500 200">
+            <defs>
+              <linearGradient id="chart-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent-cyan)" />
+                <stop offset="100%" stop-color="var(--accent-primary)" />
+              </linearGradient>
+              <linearGradient id="chart-area-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent-cyan)" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            
+            <!-- Grid lines -->
+            <line x1="50" y1="35" x2="480" y2="35" class="chart-grid-line" />
+            <line x1="50" y1="80" x2="480" y2="80" class="chart-grid-line" />
+            <line x1="50" y1="125" x2="480" y2="125" class="chart-grid-line" />
+            <line x1="50" y1="170" x2="480" y2="170" class="chart-grid-line" style="stroke:rgba(255,255,255,0.06);" />
+            
+            <!-- Area under line -->
+            <path d="M 50 170 L 50 130 L 120 100 L 190 150 L 260 70 L 330 95 L 400 45 L 470 120 L 470 170 Z" class="chart-area" />
+            
+            <!-- Main activity line -->
+            <path d="M 50 130 L 120 100 L 190 150 L 260 70 L 330 95 L 400 45 L 470 120" class="chart-line" />
+            
+            <!-- Nodes -->
+            <circle cx="50" cy="130" r="4" class="chart-dot" />
+            <circle cx="120" cy="100" r="4" class="chart-dot" />
+            <circle cx="190" cy="150" r="4" class="chart-dot" />
+            <circle cx="260" cy="70" r="4" class="chart-dot" />
+            <circle cx="330" cy="95" r="4" class="chart-dot" />
+            <circle cx="400" cy="45" r="4" class="chart-dot" />
+            <circle cx="470" cy="120" r="4" class="chart-dot" />
+            
+            <!-- Labels -->
+            <text x="50" y="190" class="chart-label" text-anchor="middle">Mon</text>
+            <text x="120" y="190" class="chart-label" text-anchor="middle">Tue</text>
+            <text x="190" y="190" class="chart-label" text-anchor="middle">Wed</text>
+            <text x="260" y="190" class="chart-label" text-anchor="middle">Thu</text>
+            <text x="330" y="190" class="chart-label" text-anchor="middle">Fri</text>
+            <text x="400" y="190" class="chart-label" text-anchor="middle">Sat</text>
+            <text x="470" y="190" class="chart-label" text-anchor="middle">Sun</text>
+            
+            <text x="35" y="39" class="chart-label" text-anchor="end">6h</text>
+            <text x="35" y="84" class="chart-label" text-anchor="end">4h</text>
+            <text x="35" y="129" class="chart-label" text-anchor="end">2h</text>
+            <text x="35" y="174" class="chart-label" text-anchor="end">0h</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Bento Card 5: Quick Utilities (1 col, 2 rows) -->
+      <div class="bento-card bento-row-2">
+        <div class="widget-title-row">
+          <h3>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; color: var(--accent-primary);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            Quick Utilities
+          </h3>
+        </div>
+        <div class="action-buttons-list" style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button class="action-list-btn" onclick="location.href='ar.html'">
+            <span class="btn-icon-wrapper"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+            <div class="btn-text-wrapper">
+              <h4>AR Learning</h4>
+              <p>Scan diagrams in 3D Space</p>
+            </div>
+          </button>
+          <button class="action-list-btn" onclick="location.href='chat.html'">
+            <span class="btn-icon-wrapper"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
+            <div class="btn-text-wrapper">
+              <h4>AI Tutor</h4>
+              <p>Immediate concept explanation</p>
+            </div>
+          </button>
+          <button class="action-list-btn" onclick="location.href='quiz.html'">
+            <span class="btn-icon-wrapper"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+            <div class="btn-text-wrapper">
+              <h4>Smart Quizzes</h4>
+              <p>Custom exams on any topic</p>
+            </div>
+          </button>
+          <button class="action-list-btn" onclick="location.href='flashcards.html'">
+            <span class="btn-icon-wrapper"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></span>
+            <div class="btn-text-wrapper">
+              <h4>AI Flashcards</h4>
+              <p>Synthesize recall cards</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bento Card 6: AR Scans Gauge -->
+      <div class="bento-card stat-gauge-card">
+        <div class="gauge-svg-wrapper">
+          <svg class="radial-gauge" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="gauge-grad-ar" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffd700" />
+                <stop offset="100%" stop-color="#d4af37" />
+              </linearGradient>
+            </defs>
+            <circle class="gauge-bg" cx="50" cy="50" r="40" />
+            <circle class="gauge-fill" cx="50" cy="50" r="40" stroke="url(#gauge-grad-ar)" style="stroke-dasharray: 251.2; stroke-dashoffset: 100.48;" />
+          </svg>
+          <div class="gauge-center-text">
+            <span class="gauge-value">12</span>
+          </div>
+        </div>
+        <span class="gauge-label">AR Scans</span>
+        <span class="gauge-trend positive">↑ 2 new scans today</span>
+      </div>
+
+      <!-- Bento Card 7: Daily Goals Checklist (1 col, 1 row) -->
+      <div class="bento-card">
+        <div class="widget-title-row">
+          <h3>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; color: var(--accent-primary);"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Daily Goals
+          </h3>
+        </div>
+        <div class="goals-list" id="goals-list-container" style="margin-top: 1rem; max-height: 120px; overflow-y: auto;">
+          <!-- checklist items populated by script.js -->
+        </div>
+        <div class="goals-input-row" style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+          <input type="text" class="goals-input" id="new-goal-input" placeholder="New goal..." style="flex: 1; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: white;">
+          <button class="goals-add-btn" id="add-goal-btn" style="padding: 6px 12px; border-radius: 8px; border: none; background: var(--gradient-primary); color: white; font-weight: 700; cursor: pointer;">+</button>
+        </div>
+      </div>
+
+      <!-- Bento Card 8: AI Study Tip of the Day (1 col, 1 row) -->
+      <div class="bento-card stat-gauge-card" style="justify-content: flex-start; text-align: left; align-items: flex-start;">
+        <span class="gauge-label" style="margin-bottom: 0.5rem; color: var(--accent-primary);">AI Study Tip</span>
+        <p style="font-size: 0.82rem; line-height: 1.4; color: var(--text-main); margin: 0;">
+          "Use the **Feynman Technique**: Explain quantum entanglement to a friend in plain English. If you hit a blank, that's what you need to review!" 💡
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js?v=4.2"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcademAI - AI Tutor</title>
+  <link rel="stylesheet" href="style.css?v=4.2">
+  <style>
+    html, body {
+      background: #000000 !important;
+      background-color: #000000 !important;
+    }
+    .ambient-orb {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Ambient Glowing Background Orbs -->
+  <div class="ambient-orb orb-purple"></div>
+  <div class="ambient-orb orb-blue"></div>
+  <div class="ambient-orb orb-cyan"></div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Floating Bottom Navigation Dock -->
+  <nav class="bottom-dock" id="app-dock">
+    <div class="logo">
+      <a href="/" style="display: flex; align-items: center; text-decoration: none; color: inherit;" title="AcademAI">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <defs>
+            <linearGradient id="logo-grad-dock" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#aa7c11" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#f3e5ab" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#logo-grad-dock)" d="M12 2L2 22h20L12 2z"></path>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/" class="nav-item" title="Home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </a>
+      <a href="/dashboard" class="nav-item" title="Dashboard">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </a>
+      <a href="chat.html" class="nav-item active" title="AI Tutor">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      </a>
+      <a href="quiz.html" class="nav-item" title="Smart Quiz">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </a>
+      <a href="flashcards.html" class="nav-item" title="Flashcards">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+      </a>
+    </div>
+
+    <a href="/logout" class="user-profile" title="Logout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    </a>
+  </nav>
+
+  <main class="main-content">
+    <div class="dashboard-header" style="padding: 0 4rem 1rem 4rem;">
+      <h1>AI Tutor Session</h1>
+    </div>
+
+    <!-- Chat Page layout with sidebar + main container -->
+    <div class="chat-page-container">
+      
+      <!-- Chat Sidebar (Recent Conversations) -->
+      <div class="chat-sidebar">
+        <button class="new-chat-btn" id="new-chat-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          New Session
+        </button>
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:0.5rem;">Recent Chats</div>
+        <div class="chat-history-list" id="chat-threads-container">
+          <!-- Loaded Dynamically -->
+        </div>
+      </div>
+
+      <!-- Main Chat Frame -->
+      <div class="chat-container">
+        <div class="chat-history" id="chat-history">
+          <div class="chat-message ai">
+            <div class="avatar-circle">AI</div>
+            <div class="message-body">
+              <div class="sender-name">AI Tutor</div>
+              <div class="bubble">
+                Hello! I am your AcademAI personal tutor. I can summarize notes, generate quizzes, or explain complex topics. What would you like to learn today?
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="chat-input-wrapper">
+          <div class="suggestions-row">
+            <button class="suggestion-chip" data-prompt="Explain Quantum Physics in simple terms">⚛️ Quantum Physics</button>
+            <button class="suggestion-chip" data-prompt="Summarize Cell Biology core concepts">🦠 Cell Biology Summary</button>
+            <button class="suggestion-chip" data-prompt="Explain the Roman Empire collapse">🏛️ Roman Fall</button>
+            <button class="suggestion-chip" data-prompt="Write a Python script to search a list using Binary Search">🐍 Binary Search</button>
+          </div>
+
+          <!-- Chat Image Preview Container -->
+          <div class="chat-preview-container" id="chat-preview-container" style="display: none;">
+            <div class="chat-preview-image-wrapper">
+              <img id="chat-preview-img" src="" alt="Upload preview">
+              <button class="chat-preview-remove-btn" id="chat-preview-remove-btn" title="Remove image">&times;</button>
+            </div>
+          </div>
+
+          <div class="chat-input">
+            <input type="file" id="chat-file-input" accept="image/*" style="display: none;">
+            <button class="chat-upload-btn" id="chat-upload-btn" title="Upload Image / Equation">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
+            <input type="text" id="chat-input" placeholder="Ask me anything about your studies...">
+            <button class="btn btn-primary" id="chat-send-btn">
+              Send
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notepad Panel -->
+      <div class="chat-notepad">
+        <div class="notepad-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Study Notepad
+        </div>
+        <textarea class="notepad-textarea" placeholder="Jot down notes, summarize explanations, or draft questions here... Notes are saved locally automatically." id="study-notes-textarea"></textarea>
+        <div class="notepad-actions">
+          <button class="notepad-btn" onclick="clearNotepad()">Clear</button>
+          <button class="notepad-btn" onclick="copyNotepad()">Copy All</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js?v=4.2"></script>
+</body>
+</html>

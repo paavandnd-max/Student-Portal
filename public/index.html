@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcademAI - Your Personal Academic Genius</title>
+  <link rel="stylesheet" href="style.css?v=4.2">
+  <style>
+    html, body {
+      background: #000000 !important;
+      background-color: #000000 !important;
+    }
+    .ambient-orb {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Ambient Glowing Background Orbs -->
+  <div class="ambient-orb orb-purple"></div>
+  <div class="ambient-orb orb-blue"></div>
+  <div class="ambient-orb orb-cyan"></div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Floating Bottom Navigation Dock -->
+  <nav class="bottom-dock" id="app-dock">
+    <div class="logo">
+      <a href="/" style="display: flex; align-items: center; text-decoration: none; color: inherit;" title="AcademAI">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <defs>
+            <linearGradient id="logo-grad-dock" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#aa7c11" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#f3e5ab" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#logo-grad-dock)" d="M12 2L2 22h20L12 2z"></path>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/" class="nav-item active" title="Home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </a>
+      <a href="/dashboard" class="nav-item" title="Dashboard">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </a>
+      <a href="chat.html" class="nav-item" title="AI Tutor">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      </a>
+      <a href="quiz.html" class="nav-item" title="Smart Quiz">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </a>
+      <a href="flashcards.html" class="nav-item" title="Flashcards">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+      </a>
+    </div>
+
+    <a href="/login" class="user-profile" title="Login">P</a>
+  </nav>
+
+  <!-- Main Content Split Hero -->
+  <main class="main-content hero">
+    <div class="hero-split-container">
+      
+      <!-- Left Hero Details -->
+      <div class="hero-left">
+        <div class="pill">
+          <span class="pulse-dot"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+          POWERED BY GEMINI AI × IBM CLOUD
+        </div>
+        
+        <h1>Your Personal<br><span class="gradient-text">Academic Genius</span></h1>
+        
+        <p>
+          Chat with <span class="highlight-ai">Gemini AI</span>, visualize textbook diagrams in <span class="highlight-ar">Augmented Reality</span>, take <span class="highlight-quiz">Smart Quizzes</span>, and track your progress in real-time.
+        </p>
+        
+        <div class="cta-group">
+          <a href="/login" class="btn btn-primary" id="start-btn">
+            Start Learning
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="/ar.html" class="btn btn-secondary">
+            Try AR Viewer
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="M12 8v8M8 12h8"/></svg>
+          </a>
+        </div>
+        
+        <footer class="landing-footer">
+          Made by Paavan
+        </footer>
+      </div>
+
+      <!-- Right Interactive Preview Console -->
+      <div class="hero-right">
+        <div class="hologram-console">
+          <div class="hologram-header">
+            <div class="console-dot-group">
+              <span class="console-dot red"></span>
+              <span class="console-dot yellow"></span>
+              <span class="console-dot green"></span>
+            </div>
+            <div class="console-title">ACADEMAI_CORE_V2.5 // LIVE_DEMO</div>
+            <span class="console-status">ONLINE</span>
+          </div>
+          
+          <div class="hologram-chat-feed" id="demo-chat-feed">
+            <!-- Simulated chat messages will type here -->
+          </div>
+          
+          <div class="hologram-input-mock">
+            <span class="mock-cursor-text" id="demo-mock-input">Query AI Tutor...</span>
+            <button class="mock-send-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Glass Tiles Features Section -->
+    <div class="features-section">
+      <h2 class="features-title">Explore AcademAI Workspaces</h2>
+      <div class="features-grid">
+        
+        <!-- Tile 1: AI Tutor -->
+        <div class="feature-tile glass-tile">
+          <div class="tile-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          </div>
+          <h3>AI Study Tutor</h3>
+          <p>Interact with our custom Gemini tutor, keep persistent notes, and upload study photos for visual guidance.</p>
+          <a href="/chat.html" class="tile-btn">Open Tutor <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+
+        <!-- Tile 2: AR/3D Studio -->
+        <div class="feature-tile glass-tile">
+          <div class="tile-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          </div>
+          <h3>3D Model Studio</h3>
+          <p>Scan textbook diagrams to project 3D twins. Reposition, scale, edit components, and export models as GLTF.</p>
+          <a href="/ar.html" class="tile-btn">Launch Studio <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+
+        <!-- Tile 3: Stacked Flashcards -->
+        <div class="feature-tile glass-tile">
+          <div class="tile-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          </div>
+          <h3>3D Flashcard Deck</h3>
+          <p>Study terms using standard 3D stacked decks featuring organic recoil swipe transitions and card flipping.</p>
+          <a href="/flashcards.html" class="tile-btn">Flip Cards <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+
+        <!-- Tile 4: Smart Quiz -->
+        <div class="feature-tile glass-tile">
+          <div class="tile-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <h3>Smart Quizzes</h3>
+          <p>Test your knowledge with 15-question customized quizzes. Track progress through concentric rings.</p>
+          <a href="/quiz.html" class="tile-btn">Take Quiz <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js?v=4.2"></script>
+</body>
+</html>

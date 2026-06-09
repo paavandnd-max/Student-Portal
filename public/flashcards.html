@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcademAI - AI Flashcards</title>
+  <link rel="stylesheet" href="style.css?v=4.2">
+  <style>
+    html, body {
+      background: #000000 !important;
+      background-color: #000000 !important;
+    }
+    .ambient-orb {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Ambient Glowing Background Orbs -->
+  <div class="ambient-orb orb-purple"></div>
+  <div class="ambient-orb orb-blue"></div>
+  <div class="ambient-orb orb-cyan"></div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Floating Bottom Navigation Dock -->
+  <nav class="bottom-dock" id="app-dock">
+    <div class="logo">
+      <a href="/" style="display: flex; align-items: center; text-decoration: none; color: inherit;" title="AcademAI">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <defs>
+            <linearGradient id="logo-grad-dock" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#aa7c11" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#f3e5ab" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#logo-grad-dock)" d="M12 2L2 22h20L12 2z"></path>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/" class="nav-item" title="Home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </a>
+      <a href="/dashboard" class="nav-item" title="Dashboard">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </a>
+      <a href="chat.html" class="nav-item" title="AI Tutor">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      </a>
+      <a href="quiz.html" class="nav-item" title="Smart Quiz">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </a>
+      <a href="flashcards.html" class="nav-item active" title="Flashcards">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+      </a>
+    </div>
+
+    <a href="/logout" class="user-profile" title="Logout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="dashboard-header" style="padding: 0 4rem 1rem 4rem;">
+      <h1>AI Flashcards</h1>
+    </div>
+
+    <div class="flashcard-layout">
+      
+      <!-- Left Configuration Panel -->
+      <div class="flashcard-sidebar">
+        <h2 style="font-family:'Outfit',sans-serif; font-size:1.4rem; color:white; margin-bottom:0.5rem;">Study Deck Generator</h2>
+        <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.5; margin-bottom:1rem;">Specify a topic and difficulty, and our AI will generate a custom spaced repetition card set.</p>
+        
+        <div class="form-group">
+          <label class="form-label" for="card-topic">Academic Topic</label>
+          <input type="text" class="flashcard-input" id="card-topic" placeholder="e.g. Krebs Cycle, Calculus Derivatives...">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Difficulty Level</label>
+          <div class="difficulty-selector" style="margin-bottom:0; flex-direction:column; gap:8px;">
+            <button class="diff-btn active" id="diff-easy" style="width:100%; border-radius:12px; padding:10px;" onclick="selectFlashcardDifficulty('Easy', this)">Easy</button>
+            <button class="diff-btn" id="diff-medium" style="width:100%; border-radius:12px; padding:10px;" onclick="selectFlashcardDifficulty('Medium', this)">Medium</button>
+            <button class="diff-btn" id="diff-hard" style="width:100%; border-radius:12px; padding:10px;" onclick="selectFlashcardDifficulty('Hard', this)">Hard</button>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" style="justify-content:center; width:100%;" onclick="generateFlashcards()">
+          Generate Cards
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Right Card Deck Viewer -->
+      <div class="flashcard-deck-container">
+        
+        <!-- Setup Placeholder State -->
+        <div id="deck-placeholder" style="text-align:center; max-width:400px; padding:2rem;">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--accent-cyan); margin-bottom:1.5rem; filter:drop-shadow(0 0 8px rgba(0,242,254,0.3))">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+          <h2 style="font-family:'Outfit',sans-serif; margin-bottom:0.75rem; font-size:1.6rem;">Study Deck Ready</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.6;">Configure the topic on the left and click "Generate Cards" to begin your session.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="deck-loading" style="display:none; text-align:center; flex-direction:column; align-items:center;">
+          <div class="spinner"></div>
+          <h2 style="font-family:'Outfit',sans-serif; margin-bottom:0.5rem; font-size:1.5rem;">Synthesizing Flashcards...</h2>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Gemini AI is parsing the topic and generating answers.</p>
+        </div>
+
+        <!-- Interactive 3D Stacked Card Viewport -->
+        <div id="deck-viewport" style="display:none; width:100%; flex-direction:column; align-items:center; gap:2.5rem;">
+          
+          <div class="flashcard-deck">
+            <!-- Physical stack effect shadow cards behind the main card -->
+            <div class="deck-shadow-card card-depth-2"></div>
+            <div class="deck-shadow-card card-depth-1"></div>
+
+            <div class="flashcard-card-inner" id="card-inner" onclick="flipActiveCard()">
+              
+              <!-- Front Side -->
+              <div class="flashcard-face front">
+                <div class="flashcard-type-label">Question / Term</div>
+                <div class="flashcard-text" id="card-front-text">Front Loading...</div>
+                <div class="flashcard-hint">Click card to reveal definition</div>
+              </div>
+              
+              <!-- Back Side -->
+              <div class="flashcard-face back">
+                <div class="flashcard-type-label">Definition / Answer</div>
+                <div class="flashcard-text" id="card-back-text" style="font-size:1.15rem; font-weight:500; line-height:1.6;">Back Loading...</div>
+                <div class="flashcard-hint">Click card to return to front</div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <!-- Deck controls navigation row -->
+          <div class="deck-controls">
+            <button class="deck-btn" id="deck-prev-btn" onclick="prevCard()" title="Previous Card">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="transform: scaleX(-1);"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+            
+            <div class="deck-progress-text" id="deck-progress">Card 1 of 8</div>
+            
+            <button class="deck-btn" id="deck-next-btn" onclick="nextCard()" title="Next Card">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+          
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js?v=4.2"></script>
+  <script>
+    let activeDifficulty = 'Easy';
+    let deckCards = [];
+    let activeCardIndex = 0;
+
+    function selectFlashcardDifficulty(diff, button) {
+      activeDifficulty = diff;
+      document.querySelectorAll('.difficulty-selector .diff-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+    }
+
+    async function generateFlashcards() {
+      const topic = document.getElementById('card-topic').value.trim();
+      if (!topic) return alert("Please enter a study topic!");
+
+      const placeholder = document.getElementById('deck-placeholder');
+      const loading = document.getElementById('deck-loading');
+      const viewport = document.getElementById('deck-viewport');
+
+      placeholder.style.display = "none";
+      viewport.style.display = "none";
+      loading.style.display = "flex";
+
+      try {
+        const response = await fetch('/api/generate-flashcards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic, difficulty: activeDifficulty })
+        });
+        const data = await response.json();
+
+        if (data.cards && data.cards.length > 0) {
+          deckCards = data.cards;
+          activeCardIndex = 0;
+          
+          loading.style.display = "none";
+          viewport.style.display = "flex";
+          
+          loadCard();
+        } else {
+          throw new Error("Invalid format from server");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to synthesize flashcards. Please try again.");
+        loading.style.display = "none";
+        placeholder.style.display = "block";
+      }
+    }
+
+    function loadCard() {
+      const inner = document.getElementById('card-inner');
+      inner.classList.remove('is-flipped'); // reset flip status
+
+      const card = deckCards[activeCardIndex];
+      document.getElementById('card-front-text').textContent = card.front;
+      document.getElementById('card-back-text').innerHTML = card.back.replace(/\n/g, '<br>');
+      document.getElementById('deck-progress').textContent = `Card ${activeCardIndex + 1} of ${deckCards.length}`;
+
+      // Enable/disable controls
+      document.getElementById('deck-prev-btn').disabled = (activeCardIndex === 0);
+      document.getElementById('deck-next-btn').disabled = (activeCardIndex === deckCards.length - 1);
+    }
+
+    function flipActiveCard() {
+      const inner = document.getElementById('card-inner');
+      inner.classList.toggle('is-flipped');
+    }
+
+    function prevCard() {
+      if (activeCardIndex > 0) {
+        const inner = document.getElementById('card-inner');
+        inner.classList.add('swipe-out-right');
+        setTimeout(() => {
+          activeCardIndex--;
+          loadCard();
+          inner.classList.remove('swipe-out-right');
+          inner.classList.add('swipe-in-left');
+          inner.offsetHeight; // force reflow
+          inner.classList.remove('swipe-in-left');
+        }, 250);
+      }
+    }
+
+    function nextCard() {
+      if (activeCardIndex < deckCards.length - 1) {
+        const inner = document.getElementById('card-inner');
+        inner.classList.add('swipe-out-left');
+        setTimeout(() => {
+          activeCardIndex++;
+          loadCard();
+          inner.classList.remove('swipe-out-left');
+          inner.classList.add('swipe-in-right');
+          inner.offsetHeight; // force reflow
+          inner.classList.remove('swipe-in-right');
+        }, 250);
+      }
+    }
+  </script>
+</body>
+</html>
