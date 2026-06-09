@@ -33,18 +33,16 @@ git push -u origin main
 
 ---
 
-## 🌐 Step 2: Create a Web Service on Render
+## 🌐 Step 2: Deploy on Render using Docker
 
 1. Log in to the [Render Dashboard](https://dashboard.render.com).
 2. Click the **New +** button at the top right and select **Web Service**.
-3. Choose **Connect a repository** and connect your newly created GitHub repository (`student-portal`).
+3. Choose **Connect a repository** and connect your repository (`student-portal`).
 4. Configure the Web Service settings:
    - **Name**: `academai-student-portal`
-   - **Region**: Select a region closest to you (e.g., `Singapore` or `Oregon`).
+   - **Region**: Select a region closest to you.
    - **Branch**: `main`
-   - **Language**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `node server.js`
+   - **Language**: **Docker** (Render will automatically detect the `Dockerfile` and skip build/start command forms).
    - **Instance Type**: Select the **Free** tier.
 
 ---
@@ -57,11 +55,24 @@ In your Render Web Service settings, go to the **Environment** tab, click **Add 
 | :--- | :--- | :--- |
 | `GEMINI_API_KEY` | `YOUR_API_KEY` | Your Google Gemini API Key. |
 
-*Note: The `PORT` variable is automatically injected and managed by Render, and the Express server in `server.js` automatically binds to it via `process.env.PORT`.*
+---
+
+## 🐳 Step 4: Run Locally with Docker (Optional)
+
+If you have Docker Desktop installed, you can build and run the container locally to test:
+
+```bash
+# 1. Build the Docker image
+docker build -t student-portal .
+
+# 2. Run the Docker container (binding container port 3000 to host port 3000)
+docker run -p 3000:3000 -e GEMINI_API_KEY="your_actual_gemini_api_key" student-portal
+```
+Once running, visit `http://localhost:3000` in your browser.
 
 ---
 
-## 🚀 Step 4: Verify Deployment
-Once Render finishes building your container (`npm install` -> `node server.js`), your dashboard will display a status of **Live**. 
+## 🚀 Step 5: Verify Deployment
+Once Render finishes building your Docker container image, your dashboard will display a status of **Live**. 
 
 Click the Render link (`https://YOUR-APP.onrender.com`) to launch and verify all features (AI chat streams, 3D Studio, quiz, and flashcards).
