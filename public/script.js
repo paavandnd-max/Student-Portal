@@ -142,6 +142,9 @@ function initBottomDockInteractivity() {
 
 // 3. Custom Lagging Neon Cursor & Click ripples
 function initCustomCursor() {
+  if (window.matchMedia("(max-width: 1024px)").matches || window.matchMedia("(pointer: coarse)").matches) {
+    return;
+  }
   const dot = document.createElement("div");
   const outline = document.createElement("div");
   dot.className = "custom-cursor-dot";

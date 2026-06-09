@@ -4088,3 +4088,200 @@ body::before {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================
+   MOBILE & TOUCHSCREEN COMPATIBILITY OVERRIDES
+   ========================================== */
+
+/* 1. Custom Cursor Suppression and Default Pointer Restoration */
+@media (pointer: coarse), (max-width: 1024px) {
+  html,
+  body {
+    cursor: auto !important;
+  }
+  
+  a,
+  button,
+  .btn,
+  .diff-btn,
+  .option-btn,
+  .logo,
+  .nav-item,
+  input,
+  textarea,
+  select,
+  .suggestion-chip,
+  .topic-badge,
+  .checkbox-container,
+  .goal-delete-btn,
+  .chat-history-item,
+  .notepad-btn,
+  .chat-upload-btn,
+  .chat-preview-remove-btn {
+    cursor: pointer !important;
+  }
+  
+  input,
+  textarea {
+    cursor: text !important;
+  }
+  
+  .custom-cursor-dot,
+  .custom-cursor-outline,
+  .click-ripple {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
+/* 2. Layout Widths & Margin Normalizations */
+@media (max-width: 1024px) {
+  /* Normalize Margins */
+  .chat-page-container,
+  .quiz-container,
+  .ar-layout,
+  .flashcard-layout {
+    margin: 0 1.5rem 3rem 1.5rem !important;
+  }
+  
+  /* Normalize Dashboard headers */
+  .dashboard-header-container {
+    padding: 2rem 1.5rem 1rem 1.5rem !important;
+  }
+  
+  .dashboard-header {
+    padding: 0 1.5rem 1rem 1.5rem !important;
+  }
+  
+  /* Landing page wrap */
+  .hero-split-container {
+    flex-direction: column !important;
+    gap: 3rem !important;
+  }
+  
+  .hero-left {
+    align-items: center !important;
+    text-align: center !important;
+  }
+  
+  .hero-left h1 {
+    font-size: 2.8rem !important;
+  }
+  
+  .hero-left p {
+    font-size: 1rem !important;
+    max-width: 600px !important;
+  }
+  
+  .hero-right {
+    width: 100% !important;
+  }
+  
+  .hologram-console {
+    max-width: 100% !important;
+    height: 380px !important;
+  }
+
+  .bottom-dock .nav-item::before {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Layout margins for mobile screens */
+  .chat-page-container,
+  .quiz-container,
+  .ar-layout,
+  .flashcard-layout {
+    margin: 0 0.75rem 3rem 0.75rem !important;
+  }
+  
+  .dashboard-header-container,
+  .dashboard-header {
+    padding: 1.5rem 0.75rem 1rem 0.75rem !important;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .hero-left h1 {
+    font-size: 2.2rem !important;
+  }
+  
+  .quiz-container {
+    padding: 1.5rem !important;
+  }
+  
+  /* Bento card grids */
+  .premium-dashboard-container {
+    padding: 0 0.75rem 2rem 0.75rem !important;
+    gap: 1rem !important;
+  }
+  
+  /* Force chat elements to flow and scroll properly */
+  .chat-page-container {
+    height: auto !important;
+  }
+  
+  .chat-container {
+    height: 500px !important;
+  }
+  
+  /* Notepad adjustments */
+  .chat-notepad {
+    margin-top: 1rem !important;
+  }
+  
+  /* AR Studio panels */
+  .ar-analysis-panel {
+    min-height: 400px !important;
+  }
+}
+
+/* 3. Bottom Dock Scaling on Mobile Viewports */
+@media (max-width: 480px) {
+  .bottom-dock {
+    bottom: 0.75rem !important;
+    height: 54px !important;
+    padding: 0 0.75rem !important;
+    gap: 0.5rem !important;
+    border-radius: 16px !important;
+  }
+  
+  .bottom-dock::before {
+    border-radius: 16px !important;
+  }
+  
+  .bottom-dock .logo {
+    padding: 0 0.25rem !important;
+    margin-right: 0.15rem !important;
+  }
+  
+  .bottom-dock .logo svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  
+  .bottom-dock .nav-links {
+    gap: 0.35rem !important;
+  }
+  
+  .bottom-dock .nav-item {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+  }
+  
+  .bottom-dock .nav-item svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .bottom-dock .user-profile {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.75rem !important;
+  }
+}
