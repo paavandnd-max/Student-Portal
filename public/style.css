@@ -4223,15 +4223,43 @@ body::before {
   /* Force chat elements to flow and scroll properly */
   .chat-page-container {
     height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
   .chat-container {
     height: 500px !important;
+    order: 1 !important;
+  }
+  
+  .chat-sidebar {
+    order: 2 !important;
+    margin-top: 1rem !important;
   }
   
   /* Notepad adjustments */
   .chat-notepad {
+    order: 3 !important;
     margin-top: 1rem !important;
+  }
+  
+  .suggestions-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding-bottom: 0.5rem !important;
+    scrollbar-width: none !important;
+  }
+  
+  .suggestions-row::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  .suggestion-chip {
+    flex-shrink: 0 !important;
+  }
+  
+  .chat-input-wrapper {
+    padding: 1rem !important;
   }
   
   /* AR Studio panels */
